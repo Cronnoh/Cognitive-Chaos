@@ -1,0 +1,6 @@
+move through walls of same color
+none = blue
+left = green, speed up, double points
+right = red, reverse, lose points
+being on right half of screen doubles points
+1 point every 100ms
