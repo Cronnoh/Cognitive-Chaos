@@ -44,39 +44,45 @@ class MoveWall(Action):
         super(MoveWall, self).__init__()
         
     def start(self):
-        self.target.position = (windowWidth-self.target.width, self.target.initialY)
+        self.target.position = (windowWidth+self.target.width, self.target.initialY)
     
     def step(self, dt):
         self.target.x += -self.target.speed * dt
         if self.target.x <= -self.target.width:
-            self.target.wall.changeColor()
+            if self.target.top == True:
+                self.target.wall.changeColor()
             self.start()
 
 class Wall:
     images = [wall_gray, wall_blue, wall_green]
+
     def __init__(self, initialSpeed):
-        self.top = WallSprite(self.images[0], windowHeight, initialSpeed, self)
-        self.bottom = WallSprite(self.images[0], self.images[0].height, initialSpeed, self)
+        self.pieces = [WallSprite(self.images[0], windowHeight, initialSpeed, self, top=True), WallSprite(self.images[0], self.images[0].height, initialSpeed, self)]
         self.changeColor()
         
     def addTo(self, layer):
-        layer.add(self.top)
-        layer.add(self.bottom)
+        for piece in self.pieces:
+            layer.add(piece)
         
     def changeColor(self):
-        topColor = random.randrange(3)
-        bottomColor = random.randrange(3)
-        self.top.image = self.images[topColor]
-        self.top.c = topColor
-        self.bottom.image = self.images[bottomColor]
-        self.bottom.c = bottomColor
+        total = 0
+        for piece in self.pieces:
+            piece.c = random.randrange(3)
+            piece.image = self.images[piece.c]
+            total += piece.c
+        
+        # if all the pieces are gray, pick one and make it not gray
+        if total == 0:
+            piece = self.pieces[random.randrange(len(self.pieces))]
+            piece.c = random.randrange(1,3)
+            piece.image = self.images[piece.c]
 
     def changeSpeed(self, speed):
-        self.top.speed = speed
-        self.bottom.speed = speed
+        for piece in self.pieces:
+            piece.speed = speed
 
     def checkCollision(self, cursor):
-        for piece in [self.top, self.bottom]:
+        for piece in self.pieces:
             intersectH = cursor.x > piece.x and cursor.x < (piece.x+piece.width)
             intersectV = cursor.y < piece.y and cursor.y > (piece.y-piece.height)
             if intersectH and intersectV:
@@ -86,13 +92,14 @@ class Wall:
 
 
 class WallSprite(Sprite):
-    def __init__(self, image, initialY, initialSpeed, wall):
+    def __init__(self, image, initialY, initialSpeed, wall, top=False):
         super(WallSprite, self).__init__(image)
         self.wall = wall
         self.initialY = initialY
         self.speed = initialSpeed
         self.c = 0
         self.image_anchor = (0, self.height)
+        self.top = top
         self.do(MoveWall())
 
 class GameLayer(Layer):
