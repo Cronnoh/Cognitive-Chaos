@@ -15,6 +15,8 @@ cursor_green = pyglet.resource.image('images/cursor_green.png')
 wall_gray = pyglet.resource.image('images/wall_gray.png')
 wall_green = pyglet.resource.image('images/wall_green.png')
 wall_blue = pyglet.resource.image('images/wall_blue.png')
+top = pyglet.resource.image('images/top.png')
+bg = pyglet.resource.image('images/bg.png')
 
 class Cursor(Sprite):
     def __init__(self, image):
@@ -90,10 +92,10 @@ class Wall:
         for piece in self.pieces:
             intersectH = cursor.x > piece.x and cursor.x < (piece.x+piece.width)
             intersectV = cursor.y < piece.y and cursor.y > (piece.y-piece.height)
-            # if intersectH and intersectV:
-            #     print("collision: " + str(cursor.colr) + " " + str(piece.colr))
-            #     if cursor.colr != piece.colr:
-            #         print("Lose")
+            if intersectH and intersectV:
+                print("collision: " + str(cursor.colr) + " " + str(piece.colr))
+                if cursor.colr != piece.colr:
+                    print("Lose")
 
 
 class WallSprite(Sprite):
@@ -110,6 +112,8 @@ class WallSprite(Sprite):
 class GameLayer(Layer):
     def __init__(self):
         super(GameLayer, self).__init__()
+        self.add(Sprite(top, position=(windowWidth/2, windowHeight-20)), z=1)
+        self.add(Sprite(bg, position=(windowWidth/2, windowHeight/2)), z=-1)
         self.slow = 500
         self.fast = 1000
         self.cursor = Cursor(cursor_blue)
