@@ -32,6 +32,11 @@ class Wall:
             piece.colr = random.randrange(1,3)
             piece.image = self.images[piece.colr]
 
+    def allGray(self):
+        for piece in self.pieces:
+            piece.colr = 0
+            piece.image = self.images[piece.colr]
+
     def changeSpeed(self, speed):
         for piece in self.pieces:
             piece.speed = speed
@@ -62,11 +67,15 @@ class MoveWall(Action):
         super(MoveWall, self).__init__()
         
     def start(self):
-        self.target.position = (windowWidth+self.target.width, self.target.initialY)
+        self.target.position = (windowWidth, self.target.initialY)
     
     def step(self, dt):
         self.target.x += -self.target.speed * dt
-        if self.target.x <= -self.target.width:
+        if self.target.x < -self.target.width:
             if self.target.top == True:
                 self.target.wall.changeColor()
             self.start()
+        elif self.target.x > windowWidth:
+            if self.target.top == True:
+                self.target.wall.allGray()
+            self.target.position = (-self.target.width, self.target.initialY)

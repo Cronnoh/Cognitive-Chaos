@@ -37,11 +37,20 @@ class Cursor(Sprite):
         self.colr = 1
         self.do(Repeat(Rotate(360,4)))
 
+    def reverse(self):
+        self.image = cursor_blue
+        self.colr = 3
+        self.do(Repeat(Rotate(-360,2)))
+
 class GameLayer(Layer):
+    levels = [level1, level2, level3, level4, level5]
     def __init__(self):
         super(GameLayer, self).__init__()
-        self.add(Sprite(top, position=(windowWidth/2, windowHeight-20)), z=1)
+        self.add(Sprite(top, position=(windowWidth/2, windowHeight-20)), z=2)
+        self.levelSprite = Sprite(level1, position=(windowWidth/2, windowHeight/2))
+        self.add(self.levelSprite, z=1)
         self.add(Sprite(bg, position=(windowWidth/2, windowHeight/2)), z=-1)
+        self.level = 0
         self.slow = 500
         self.fast = 1000
         self.cursor = Cursor(cursor_blue)
@@ -57,10 +66,20 @@ class GameLayer(Layer):
             wall.checkCollision(self.cursor)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
+        if buttons == pyglet.window.mouse.RIGHT:
+            self.rightMouse()
+            return
         self.cursor.speedUp()
+        self.level = (self.level+1) % 5
+        self.levelSprite.image = self.levels[self.level]
         for wall in self.walls:
             wall.changeSpeed(self.fast)
         
+    def rightMouse(self):
+        self.cursor.reverse()
+        for wall in self.walls:
+            wall.changeSpeed(-self.fast)
+
     def on_mouse_release(self, x, y, buttons, modifiers):
         self.cursor.slowDown()
         for wall in self.walls:
