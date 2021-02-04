@@ -17,11 +17,12 @@ class Cursor(Sprite):
         window.push_handlers(self)
 
     def on_mouse_motion (self, x, y, dx, dy):
+        x,y = director.get_virtual_coordinates(x,y)
         x = min(x, windowWidth)
         x = max(x, 0)
         y = min(y, gameAreaHeight)
         y = max(y, 0)
-        self.position = director.get_virtual_coordinates(x,y)
+        self.position = x,y
     
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.on_mouse_motion(x, y, dx, dy)
