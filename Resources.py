@@ -15,8 +15,10 @@ wall_blue = pyglet.resource.image('images/wall_blue.png')
 top = pyglet.resource.image('images/top.png')
 bg = pyglet.resource.image('images/bg.png')
 
-level1 = pyglet.resource.image('images/level1.png')
-level2 = pyglet.resource.image('images/level2.png')
-level3 = pyglet.resource.image('images/level3.png')
-level4 = pyglet.resource.image('images/level4.png')
-level5 = pyglet.resource.image('images/level5.png')
+levels = [
+    pyglet.resource.image('images/level1.png'),
+    pyglet.resource.image('images/level2.png'),
+    pyglet.resource.image('images/level3.png'),
+    pyglet.resource.image('images/level4.png'),
+    pyglet.resource.image('images/level5.png')
+]
