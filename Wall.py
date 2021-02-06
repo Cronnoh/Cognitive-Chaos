@@ -6,14 +6,13 @@ import random
 from Resources import *
 
 class Wall:
-    images = [wall_gray, wall_blue, wall_green]
 
     def __init__(self, pieceNum, initialSpeed, position):
         initialX = windowWidth - position*384
-        self.pieces = [WallSprite(self.images[0], initialX, gameAreaHeight, initialSpeed, self, top=True)]
+        self.pieces = [WallSprite(wallImages[0], initialX, gameAreaHeight, initialSpeed, self, top=True)]
         for i in range(1,pieceNum):
-            height = gameAreaHeight - wall_gray.height*i
-            self.pieces.append(WallSprite(self.images[0], initialX, height, initialSpeed, self))
+            height = gameAreaHeight - wallImages[0].height*i
+            self.pieces.append(WallSprite(wallImages[0], initialX, height, initialSpeed, self))
         self.changeColor()
         self.collide = False
         self.canActivate = False
@@ -31,20 +30,20 @@ class Wall:
     def changeColor(self):
         total = 0
         for piece in self.pieces:
-            piece.colr = random.randrange(3)
-            piece.image = self.images[piece.colr]
+            piece.colr = random.randrange(len(wallImages))
+            piece.image = wallImages[piece.colr]
             total += piece.colr
         
         # if all the pieces are gray, pick one and make it not gray
         if total == 0:
             piece = self.pieces[random.randrange(len(self.pieces))]
-            piece.colr = random.randrange(1,3)
-            piece.image = self.images[piece.colr]
+            piece.colr = random.randrange(1,len(wallImages))
+            piece.image = wallImages[piece.colr]
 
     def allGray(self):
         for piece in self.pieces:
             piece.colr = 0
-            piece.image = self.images[piece.colr]
+            piece.image = wallImages[piece.colr]
 
     def changeSpeed(self, speed):
         for piece in self.pieces:

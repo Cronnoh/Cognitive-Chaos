@@ -38,15 +38,15 @@ class Cursor(Sprite):
         self.do(Repeat(Rotate(360,4)))
 
     def reverse(self):
-        self.image = cursor_blue
+        self.image = cursor_red
         self.colr = 3
-        self.do(Repeat(Rotate(-360,2)))
+        self.do(Repeat(Rotate(-360,4)))
 
 class GameLayer(Layer):
     def __init__(self):
         super(GameLayer, self).__init__()
         self.speed = 500
-        self.speedMult = 1
+        self.speedMod = 1
         self.cursor = Cursor(cursor_blue)
         self.walls = [Wall.Wall(4, self.speed, 0),Wall.Wall(4, self.speed, 1),Wall.Wall(4, self.speed, 2),Wall.Wall(4, self.speed, 3)]
         for wall in self.walls:
@@ -68,7 +68,7 @@ class GameLayer(Layer):
         if level == 4 or level == 5:
             self.speed += 100
         for wall in self.walls:
-            wall.changeSpeed(self.speed*self.speedMult)
+            wall.changeSpeed(self.speed+self.speedMod)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         if buttons == pyglet.window.mouse.RIGHT:
@@ -76,21 +76,21 @@ class GameLayer(Layer):
             return
         self.score.modifier = 2
         self.cursor.speedUp()
-        self.speedMult = 1.2
+        self.speedMod = 200
         for wall in self.walls:
-            wall.changeSpeed(self.speed*self.speedMult)
+            wall.changeSpeed(self.speed+self.speedMod)
         
     def rightMouse(self):
         self.cursor.reverse()
         self.score.modifier = -5
-        self.speedMult = 1.2
+        self.speedMod = 400
         for wall in self.walls:
-            wall.changeSpeed(-self.speed*self.speedMult)
+            wall.changeSpeed(-self.speed+self.speedMod)
 
     def on_mouse_release(self, x, y, buttons, modifiers):
         self.cursor.slowDown()
         self.score.modifier = 1
-        self.speedMult = 1
+        self.speedMod = 1
         for wall in self.walls:
             wall.changeSpeed(self.speed)
 
