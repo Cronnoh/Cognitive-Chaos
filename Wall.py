@@ -51,7 +51,7 @@ class Wall:
 
     def checkCollision(self, cursor):
         if not self.collide:
-            return
+            return True
         for piece in self.pieces:
             intersectH = (cursor.x+cursor.radius) > piece.x and (cursor.x-cursor.radius) < (piece.x+piece.width)
             intersectV = (cursor.y-cursor.radius) < piece.y and (cursor.y+cursor.radius) > (piece.y-piece.height)
@@ -59,6 +59,8 @@ class Wall:
                 print("collision: " + str(cursor.colr) + " " + str(piece.colr))
                 if cursor.colr != piece.colr:
                     print("Lose")
+                    return False
+        return True
 
 class WallSprite(Sprite):
     def __init__(self, image, initialX, initialY, initialSpeed, wall, top=False):
@@ -84,13 +86,13 @@ class MoveWall(Action):
     
     def step(self, dt):
         self.target.x += -self.target.speed * dt
-        if self.target.x < -self.target.width-128:
+        if self.target.x < -self.target.width-self.target.width:
             if self.target.wall.canActivate:
                 self.target.wall.activate()
             if self.target.top == True:
                 self.target.wall.changeColor()
             self.target.position = (windowWidth, self.target.initialY)
-        elif self.target.x > windowWidth+128:
+        elif self.target.x > windowWidth+self.target.width:
             if self.target.top == True:
                 self.target.wall.allGray()
             self.target.position = (-self.target.width, self.target.initialY)

@@ -40,7 +40,7 @@ class Cursor(Sprite):
     def reverse(self):
         self.image = cursor_red
         self.colr = 3
-        self.do(Repeat(Rotate(-360,4)))
+        self.do(Repeat(Rotate(-360,5)))
 
 class GameLayer(Layer):
     def __init__(self):
@@ -53,7 +53,6 @@ class GameLayer(Layer):
             wall.addTo(self)
         self.add(self.cursor)
         self.score = Score(self.cursor)
-        self.score.do(Repeat(Delay(.1) + CallFunc(self.score.update)))
         window.push_handlers(self)
 
     def level(self, level):
@@ -104,6 +103,7 @@ class Score(text.Label):
         self.value = 0
         self.cursor = cursor
         self.level = 1
+        self.do(Repeat(Delay(.1) + CallFunc(self.update)))
         
     def update(self):
         if self.cursor.x >= windowWidth/2 and self.modifier > 0:
@@ -131,7 +131,8 @@ class MainScene(scene.Scene):
 
     def update(self):
         for wall in self.gameLayer.walls:
-            wall.checkCollision(self.gameLayer.cursor)
+            if not wall.checkCollision(self.gameLayer.cursor):
+                director.run(EndScene(self.gameLayer.score.value))
 
     def increaseLevel(self):
         if self.level < 5:
@@ -140,6 +141,18 @@ class MainScene(scene.Scene):
         self.gameLayer.level(self.level)
         self.gameLayer.score.level = self.level
         self.levelSprite.image = levels[self.level-1]
+
+class EndScene(scene.Scene):
+
+    def __init__(self, score):
+        super(EndScene, self).__init__()
+        self.score = text.Label(str(score))
+        self.score.position = (windowWidth/2, windowHeight/2)
+        self.add(self.score)
+
+    def restart(self):
+        director.run(main)
+
 
 window = director.init(
    windowWidth,
