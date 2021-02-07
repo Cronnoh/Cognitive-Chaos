@@ -81,7 +81,6 @@ class MoveWall(Action):
         super(MoveWall, self).__init__()
         
     def start(self):
-        print(self.target.initialX)
         self.target.position = (self.target.initialX, self.target.initialY)
     
     def step(self, dt):

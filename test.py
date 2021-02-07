@@ -47,6 +47,7 @@ class GameLayer(Layer):
         super(GameLayer, self).__init__()
         self.speed = 500
         self.speedMod = 1
+        self.dir = 1
         self.cursor = Cursor(cursor_blue)
         self.walls = [Wall.Wall(4, self.speed, 0),Wall.Wall(4, self.speed, 1),Wall.Wall(4, self.speed, 2),Wall.Wall(4, self.speed, 3)]
         for wall in self.walls:
@@ -67,7 +68,7 @@ class GameLayer(Layer):
         if level == 4 or level == 5:
             self.speed += 100
         for wall in self.walls:
-            wall.changeSpeed(self.speed+self.speedMod)
+            wall.changeSpeed(self.speed*self.dir+self.speedMod)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         if buttons == pyglet.window.mouse.RIGHT:
@@ -76,29 +77,33 @@ class GameLayer(Layer):
         self.score.modifier = 2
         self.cursor.speedUp()
         self.speedMod = 200
+        self.dir = 1
         for wall in self.walls:
-            wall.changeSpeed(self.speed+self.speedMod)
+            wall.changeSpeed(self.speed*self.dir+self.speedMod)
         
     def rightMouse(self):
         self.cursor.reverse()
         self.score.modifier = -5
-        self.speedMod = 400
+        self.speedMod = 300
+        self.dir = -1
         for wall in self.walls:
-            wall.changeSpeed(-self.speed+self.speedMod)
+            wall.changeSpeed(self.speed*self.dir+self.speedMod)
 
     def on_mouse_release(self, x, y, buttons, modifiers):
         self.cursor.slowDown()
         self.score.modifier = 1
         self.speedMod = 1
+        self.dir = 1
         for wall in self.walls:
             wall.changeSpeed(self.speed)
 
 class Score(text.Label):
     def __init__(self, cursor):
-        super(Score, self).__init__("0")
-        self.font_name="sans-serif",
-        self.font_size=32
-        self.position = (25, windowHeight-25)
+        super(Score, self).__init__("0",
+            font_name="Arial Black",
+            font_size=24
+        )
+        self.position = (35, windowHeight-30)
         self.modifier = 1
         self.value = 0
         self.cursor = cursor
@@ -146,12 +151,33 @@ class EndScene(scene.Scene):
 
     def __init__(self, score):
         super(EndScene, self).__init__()
-        self.score = text.Label(str(score))
+        self.score = text.Label(str(score),
+            font_name = "Arial Black",
+            font_size = 32,
+            anchor_x = "center",
+            anchor_y = "center"
+        )
         self.score.position = (windowWidth/2, windowHeight/2)
         self.add(self.score)
+        self.do(Delay(1) + CallFunc(self.displayRestart))
+
+    def displayRestart(self):
+        restartText = text.Label("Click to Restart",
+            font_name = "Arial Black",
+            font_size = 24,
+            anchor_x = "center",
+            anchor_y = "center"
+        )
+        restartText.position = (windowWidth/2, 100)
+        self.add(restartText)
+        window.push_handlers(self)
 
     def restart(self):
-        director.run(main)
+        window.pop_handlers()
+        director.run(MainScene())
+
+    def on_mouse_press(self, x, y, buttons, modifiers):
+        self.restart()
 
 
 window = director.init(
@@ -159,5 +185,4 @@ window = director.init(
    windowHeight,
    caption="test")
 
-main = MainScene()
-director.run(main)
+director.run(MainScene())
