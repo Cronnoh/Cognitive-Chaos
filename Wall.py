@@ -56,9 +56,9 @@ class Wall:
             intersectH = (cursor.x+cursor.radius) > piece.x and (cursor.x-cursor.radius) < (piece.x+piece.width)
             intersectV = (cursor.y-cursor.radius) < piece.y and (cursor.y+cursor.radius) > (piece.y-piece.height)
             if intersectH and intersectV:
-                print("collision: " + str(cursor.colr) + " " + str(piece.colr))
+                # print("collision: " + str(cursor.colr) + " " + str(piece.colr))
                 if cursor.colr != piece.colr:
-                    print("Lose")
+                    # print("Lose")
                     return False
         return True
 

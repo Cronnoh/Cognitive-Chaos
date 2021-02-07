@@ -92,7 +92,7 @@ class GameLayer(Layer):
     def on_mouse_release(self, x, y, buttons, modifiers):
         self.cursor.slowDown()
         self.score.modifier = 1
-        self.speedMod = 1
+        self.speedMod = 0
         self.dir = 1
         for wall in self.walls:
             wall.changeSpeed(self.speed)
@@ -142,7 +142,6 @@ class MainScene(scene.Scene):
     def increaseLevel(self):
         if self.level < 5:
             self.level += 1
-        print("LEVEL UP ", self.level)
         self.gameLayer.level(self.level)
         self.gameLayer.score.level = self.level
         self.levelSprite.image = levels[self.level-1]
