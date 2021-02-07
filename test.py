@@ -84,7 +84,7 @@ class GameLayer(Layer):
     def rightMouse(self):
         self.cursor.reverse()
         self.score.modifier = -5
-        self.speedMod = 300
+        self.speedMod = 250
         self.dir = -1
         for wall in self.walls:
             wall.changeSpeed(self.speed*self.dir+self.speedMod)
@@ -137,7 +137,7 @@ class MainScene(scene.Scene):
     def update(self):
         for wall in self.gameLayer.walls:
             if not wall.checkCollision(self.gameLayer.cursor):
-                director.run(EndScene(self.gameLayer.score.value))
+                director.replace(EndScene(self.gameLayer.score.value))
 
     def increaseLevel(self):
         if self.level < 5:
@@ -172,8 +172,7 @@ class EndScene(scene.Scene):
         window.push_handlers(self)
 
     def restart(self):
-        window.pop_handlers()
-        director.run(MainScene())
+        director.replace(MainScene())
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         self.restart()
