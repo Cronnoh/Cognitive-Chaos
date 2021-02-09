@@ -1,3 +1,7 @@
+# Connor Hesseling
+# CPS 499
+# Project 1
+
 from cocos import *
 from cocos.layer import *
 from cocos.director import *
@@ -6,6 +10,9 @@ from cocos.sprite import *
 
 import Wall
 from Resources import *
+
+BASE_SPEED = 500
+SPEED_INCREASE = 100
 
 class Cursor(Sprite):
     def __init__(self, image):
@@ -45,7 +52,7 @@ class Cursor(Sprite):
 class GameLayer(Layer):
     def __init__(self):
         super(GameLayer, self).__init__()
-        self.speed = 500
+        self.speed = BASE_SPEED
         self.speedMod = 1
         self.dir = 1
         self.cursor = Cursor(cursor_blue)
@@ -59,14 +66,14 @@ class GameLayer(Layer):
     def level(self, level):
         if level == 1:
             self.walls[0].activate()
-            self.speed = 500
+            self.speed = BASE_SPEED
         if level == 2:
             self.walls[2].canActivate = True
         if level == 3:
             self.walls[1].canActivate = True
             self.walls[3].canActivate = True
         if level == 4 or level == 5:
-            self.speed += 100
+            self.speed += SPEED_INCREASE
         for wall in self.walls:
             wall.changeSpeed(self.speed*self.dir+self.speedMod)
 
@@ -172,15 +179,26 @@ class EndScene(scene.Scene):
         window.push_handlers(self)
 
     def restart(self):
+        window.pop_handlers()
         director.replace(MainScene())
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         self.restart()
 
+class StartScene(scene.Scene):
+    def __init__(self):
+        super(StartScene, self).__init__()
+        tutorialImage = Sprite(tutorial, position=(windowWidth/2,windowHeight/2))
+        self.add(tutorialImage)
+        window.push_handlers(self)
+        
+    def on_mouse_press(self, x, y, buttons, modifiers):
+        window.pop_handlers()
+        director.replace(MainScene())
 
 window = director.init(
    windowWidth,
    windowHeight,
    caption="test")
 
-director.run(MainScene())
+director.run(StartScene())

@@ -1,3 +1,7 @@
+# Connor Hesseling
+# CPS 499
+# Project 1
+
 import pyglet
 
 windowWidth = 1280
@@ -19,6 +23,7 @@ wallImages = [
 
 top = pyglet.resource.image('images/top.png')
 bg = pyglet.resource.image('images/bg.png')
+tutorial = pyglet.resource.image('images/tutorial.png')
 
 levels = [
     pyglet.resource.image('images/level1.png'),

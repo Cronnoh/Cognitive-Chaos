@@ -1,3 +1,7 @@
+# Connor Hesseling
+# CPS 499
+# Project 1
+
 from cocos import *
 from cocos.actions import *
 from cocos.sprite import *
@@ -8,6 +12,8 @@ from Resources import *
 class Wall:
 
     def __init__(self, pieceNum, initialSpeed, position):
+        # All walls are invisible with no collision until activated
+        # 384 is the distance between the left edges of each wall
         initialX = windowWidth - position*384
         self.pieces = [WallSprite(wallImages[0], initialX, gameAreaHeight, initialSpeed, self, top=True)]
         for i in range(1,pieceNum):
@@ -85,12 +91,16 @@ class MoveWall(Action):
     
     def step(self, dt):
         self.target.x += -self.target.speed * dt
+        # if the wall is entirely off the left edge of the screen
         if self.target.x < -self.target.width-self.target.width:
+            # if the wall can activate and is off-screen activate it
             if self.target.wall.canActivate:
                 self.target.wall.activate()
+            # Prevent changeColor from being called for each piece
             if self.target.top == True:
                 self.target.wall.changeColor()
             self.target.position = (windowWidth, self.target.initialY)
+        # else if the wall goes entirely off the right edge of the screen
         elif self.target.x > windowWidth+self.target.width:
             if self.target.top == True:
                 self.target.wall.allGray()
